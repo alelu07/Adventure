@@ -1,12 +1,3 @@
-```java
-Java:
-  type: programming
-  ace_mode: java
-  color: "#b07219"
-  primary_extension: .java
-
-
-
 package game1;
 
 import java.awt.Color;
@@ -192,4 +183,3 @@ public class Main extends JFrame implements Runnable {
         }
     }
 }
-```
