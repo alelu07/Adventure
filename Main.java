@@ -53,6 +53,10 @@ public class Main extends JFrame implements Runnable {
     public int dogerandom;
     public String dogestr = "OMG";
     
+    public int watert = 0;
+    public int wateri = 0;
+    public boolean waterb = false;
+    
     public boolean start = false;
     public int startt = 0;
     public int startfade = 0x00;
@@ -81,6 +85,7 @@ public class Main extends JFrame implements Runnable {
     private BufferedImage[][][][] tile = new BufferedImage[biomsize][biomsize][worldsize][worldsize];
     private BufferedImage stone;
     private BufferedImage sand;
+    private BufferedImage water[] = new BufferedImage[4];
     
     private Image dbImage;
     private Graphics dbg;
@@ -107,9 +112,13 @@ public class Main extends JFrame implements Runnable {
     }
     
     public void move() {
-	
+
+        watert++;
+        if (watert >= 105) {wateri++; watert = 0;}
+        if (wateri >= 4) wateri = 0;
+        
 	menux+=menuxdir;
-	
+
         x-=xdir;
         y-=ydir;
         if (xdir > 0) doge = dogeR;
@@ -150,13 +159,17 @@ public class Main extends JFrame implements Runnable {
     public Main() {
         
         try {
-          hero = ImageIO.read(new File("C:\\Adventure\\img\\hero.png"));
-          doge = ImageIO.read(new File("C:\\Adventure\\img\\Doge.png"));
-          dogeR = ImageIO.read(new File("C:\\Adventure\\img\\Doge.png"));
-          dogeL = ImageIO.read(new File("C:\\Adventure\\img\\Doge2.png"));
-          grass = ImageIO.read(new File("C:\\Adventure\\img\\grass.png"));
-          stone = ImageIO.read(new File("C:\\Adventure\\img\\stone.png"));
-          sand = ImageIO.read(new File("C:\\Adventure\\img\\sand.png"));
+          hero = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\hero.png"));
+          doge = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\Doge.png"));
+          dogeR = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\Doge.png"));
+          dogeL = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\Doge2.png"));
+          grass = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\grass.png"));
+          stone = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\stone.png"));
+          sand = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\sand.png"));
+          water[0] = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\water0.png"));
+          water[1] = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\water1.png"));
+          water[2] = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\water2.png"));
+          water[3] = ImageIO.read(new File("C:\\Users\\Ulrik\\Desktop\\ADVENTURE\\water3.png"));
        } catch (IOException e) {
             System.out.println("couldn't load Image: " + e);
        }
@@ -185,16 +198,16 @@ public class Main extends JFrame implements Runnable {
     }
     
     public void paintStart(Graphics g) {
-	
+
         g.setColor(Color.decode("0x"+Integer.toHexString(startfade)+"0000"));
         g.setFont(font);
         g.drawString("GAUT", width/2, height/2);
-	
+
 	repaint();
     } 
     
     public void paintMenu(Graphics g) {
-	
+
 	g.setColor(Color.GREEN);
 	g.setFont(font);
 	Rectangle r1 = new Rectangle(tilesize, menux, tilesize, tilesize);
@@ -223,11 +236,12 @@ public class Main extends JFrame implements Runnable {
 	    if (j && options) {options = false; menusi = 0; j = false;}
 	    if (j && !options) {System.exit(0);}
 	} else menuc[2] = Color.RED;
-	
+
 	repaint();
     }
     
-    public void paintWorld(Graphics g) {
+public void paintWorld(Graphics g) {
+        
         for (int iy = 0; iy < worldsize; iy++) {
             for (int ix = 0; ix < worldsize; ix++) {
                 biom[ix][iy] = r.nextInt(1000);
@@ -237,25 +251,25 @@ public class Main extends JFrame implements Runnable {
                             
                             tilefile[jx][jy][ix][iy] = r.nextInt(1000);
                             if (biom[ix][iy] < 750) {
-                                if (tilefile[jx][jy][ix][iy] < 990) {tile[jx][jy][ix][iy] = grass; color[jx][jy][ix][iy] = Color.GREEN;}
-                                else if (tilefile[jx][jy][ix][iy] < 997) {tile[jx][jy][ix][iy] = stone; color[jx][jy][ix][iy] = Color.GRAY;}
-                                else if (tilefile[jx][jy][ix][iy] < 1000) {tile[jx][jy][ix][iy] = sand; color[jx][jy][ix][iy] = Color.YELLOW;}
+                                if (tilefile[jx][jy][ix][iy] < 990) tile[jx][jy][ix][iy] = grass;
+                                else if (tilefile[jx][jy][ix][iy] < 997) tile[jx][jy][ix][iy] = stone;
+                                else if (tilefile[jx][jy][ix][iy] < 1000) tile[jx][jy][ix][iy] = sand;
                             }
                             else if (biom[ix][iy] < 850) {
-                                if (tilefile[jx][jy][ix][iy] < 20) {tile[jx][jy][ix][iy] = grass; color[jx][jy][ix][iy] = Color.GREEN;}
-                                else if (tilefile[jx][jy][ix][iy] < 950) {tile[jx][jy][ix][iy] = stone; color[jx][jy][ix][iy] = Color.GRAY;}
-                                else if (tilefile[jx][jy][ix][iy] < 1000) {tile[jx][jy][ix][iy] = sand; color[jx][jy][ix][iy] = Color.YELLOW;}
+                                if (tilefile[jx][jy][ix][iy] < 20) tile[jx][jy][ix][iy] = grass;
+                                else if (tilefile[jx][jy][ix][iy] < 950) tile[jx][jy][ix][iy] = stone;
+                                else if (tilefile[jx][jy][ix][iy] < 1000) tile[jx][jy][ix][iy] = sand;
                             }
                             else if (biom[ix][iy] < 1000) {
-                                if (tilefile[jx][jy][ix][iy] < 5) {tile[jx][jy][ix][iy] = grass; color[jx][jy][ix][iy] = Color.GREEN;}
-                                else if (tilefile[jx][jy][ix][iy] < 25) {tile[jx][jy][ix][iy] = stone; color[jx][jy][ix][iy] = Color.GRAY;}
-                                else if (tilefile[jx][jy][ix][iy] < 1000) {tile[jx][jy][ix][iy] = sand; color[jx][jy][ix][iy] = Color.YELLOW;}
+                                if (tilefile[jx][jy][ix][iy] < 5) tile[jx][jy][ix][iy] = grass;
+                                else if (tilefile[jx][jy][ix][iy] < 25) tile[jx][jy][ix][iy] = stone;
+                                else if (tilefile[jx][jy][ix][iy] < 900) tile[jx][jy][ix][iy] = sand;
+                                else if (tilefile[jx][jy][ix][iy] < 1000) {tile[jx][jy][ix][iy] = water[0]; waterb = true;}
                             }
                         }
                         if (x+jx*tilesize+ix*biomsize*tilesize > -tilesize && x+jx*tilesize+ix*biomsize*tilesize < width && y+jy*tilesize+iy*biomsize*tilesize > -tilesize && y+jy*tilesize+iy*biomsize*tilesize < height) {
-			    g.setColor(color[jx][jy][ix][iy]);
-			    g.fillRect(x+jx*tilesize+ix*biomsize*tilesize, y+jy*tilesize+iy*biomsize*tilesize, tilesize, tilesize);
-                            g.drawImage(tile[jx][jy][ix][iy], x+jx*tilesize+ix*biomsize*tilesize, y+jy*tilesize+iy*biomsize*tilesize, rootPane);
+                            if (tile[jx][jy][ix][iy] == water[0]) {g.drawImage(water[wateri], x+jx*tilesize+ix*biomsize*tilesize, y+jy*tilesize+iy*biomsize*tilesize, rootPane); waterb = false; System.out.println(wateri);}
+                            else g.drawImage(tile[jx][jy][ix][iy], x+jx*tilesize+ix*biomsize*tilesize, y+jy*tilesize+iy*biomsize*tilesize, rootPane);
                         }
                     }
                 }
@@ -271,7 +285,6 @@ public class Main extends JFrame implements Runnable {
         
         g.drawString("X: "+-(x/tilesize/biomsize)+" Y:" +-(y/tilesize/biomsize), 10, 200);
 	g.setColor(character);
-        g.fillRect(width/2, height/2, tilesize, tilesize);
         g.drawImage(doge, width/2, height/2, null);
         
         repaint();
